@@ -118,15 +118,11 @@ public:
     SingleLinkedList() : size_(0) {}
 
     SingleLinkedList(std::initializer_list<Type> values) : SingleLinkedList() {
-        SingleLinkedList tmp;
-        tmp.Copy(values.begin(), values.end());
-        swap(tmp);
+        Copy(values.begin(), values.end());
     }
 
     SingleLinkedList(const SingleLinkedList& other) : SingleLinkedList() {
-        SingleLinkedList tmp;
-        tmp.Copy(other.begin(), other.end());
-        swap(tmp);
+        Copy(other.begin(), other.end());
     }
 
     SingleLinkedList& operator=(const SingleLinkedList& rhs) {
@@ -144,18 +140,15 @@ public:
 
     template <typename It>
     void Copy(const It list_begin, const It list_end) {
-        Node* cur;
+        SingleLinkedList tmp;
+        Node* cur = &tmp.head_;
         for (auto it = list_begin; it != list_end; ++it) {
             Node* new_node = new Node(*it, nullptr);
-            if (size_ == 0) {
-                head_.next_node = new_node;
-                cur = head_.next_node;
-            } else {
-                cur->next_node = new_node;
-                cur = cur->next_node;
-            }
-            ++size_;
+            cur->next_node = new_node;
+            cur = cur->next_node;
+            ++(tmp.size_);
         }
+        swap(tmp);
     }
 
     [[nodiscard]] size_t GetSize() const noexcept {
